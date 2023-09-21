@@ -5,7 +5,7 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-            APP_NAME = "register-app-pipeline"
+            APP_NAME = "vulnado-pipeline"
             RELEASE = "1.0.0"
             DOCKER_USER = "daniel217x"
             DOCKER_PASS = 'dockerhub'
@@ -24,7 +24,7 @@ pipeline {
 
         stage("Checkout from SCM") {
                steps {
-                   git branch: 'main', credentialsId: 'github', url: 'https://github.com/Danielib217/Registration-app'
+                   git branch: 'master', credentialsId: 'github', url: 'https://github.com/Danielib217/vulnado'
                }
         }
 
