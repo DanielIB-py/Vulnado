@@ -58,7 +58,7 @@ pipeline {
         stage("Polaris"){
             steps{
                 script{
-                    sh('curl -fLsS -o bridge.zip $(BRIDGECLI_LINUX64) && unzip -qo -d ./bridge.zip && rm -f bridge.zip ./synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA displayName: 'Polaris Scan'')
+                    sh('curl -fLsS -o bridge.zip $(BRIDGECLI_LINUX64) && unzip -qo -d ./bridge.zip && rm -f bridge.zip ./synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA')
                     
                 }
             }
