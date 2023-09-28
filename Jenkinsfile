@@ -11,8 +11,6 @@ pipeline {
             DOCKER_PASS = 'dockerhub'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-            BRIDGE_POLARIS_ACCESSTOKEN = "apf9q719j52cpdso23iookbodskn33its3v465s53gj8dubloqa531uslksaoik7i0no1cp6ap09k"
-            BRIDGE_POLARIS_SERVERURL = "https://poc.polaris.synopsys.com/"
             BRIDGE_POLARIS_APPLICATION_NAME = "WHIPSO"
             BRIDGE_POLARIS_PROJECT_NAME = "Test Vulna"
 
@@ -54,15 +52,22 @@ pipeline {
                 }
             }
         }
-        stage("Polaris"){
-            steps{
-                script{
-                    sh('./home/whip/synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA')
-                    
+       
+    stage('polaris') {
+        steps {
+            withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
+                script {
+                    status = sh returnStatus: true, script: """
+                        curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip -qo -d $RUNNER_TEMP bridge.zip && rm -f bridge.zip
+                        $WORKSPACE_TMP/synopsys-bridge --verbose --stage polaris polaris.assessment.types=SAST,SCA
+                    """
+                    if (status == 8) { unstable 'policy violation' }
+                    else if (status != 0) { error 'bridge failure' }
                 }
             }
         }
-    
+    }
+
         stage("Build & Push Docker Image"){
             steps{
                 script{
