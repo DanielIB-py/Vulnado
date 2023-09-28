@@ -57,7 +57,7 @@ pipeline {
         stage("Polaris"){
             steps{
                 script{
-                    sh('curl -fLsS -o bridge.zip "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-linux64.zip" && unzip -qo -d ./bridge.zip && rm -f bridge.zip ./synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA')
+                    sh( ./home/whip/synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA')
                     
                 }
             }
