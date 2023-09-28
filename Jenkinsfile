@@ -58,8 +58,10 @@ pipeline {
             
                 script {
                     withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
+                        status = sh returnStatus: true, script: """
                         curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip -qo -d $RUNNER_TEMP bridge.zip && rm -f bridge.zip
                         $WORKSPACE_TMP/synopsys-bridge --verbose --stage polaris polaris.assessment.types=SAST,SCA
+                        """
                     
                     if (status == 8) { unstable 'policy violation' }
                     else if (status != 0) { error 'bridge failure' }
