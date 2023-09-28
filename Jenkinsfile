@@ -13,7 +13,7 @@ pipeline {
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
             BRIDGE_POLARIS_APPLICATION_NAME = "WHIPSO"
             BRIDGE_POLARIS_PROJECT_NAME = "Test Vulna"
-            BRIDGE_POLARIS_ACCESSTOKEN = "apf9q719j52cpdso23iookbodufgmjm31qr4mhdu4eri5si0pkspppk6urd0po54ouqgiqtrs70p0"
+          
     }
 
     
@@ -57,6 +57,7 @@ pipeline {
         steps {
             
                 script {
+                    withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
                     status = sh returnStatus: true, script: """
                         curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip -qo -d $RUNNER_TEMP bridge.zip && rm -f bridge.zip
                         $WORKSPACE_TMP/synopsys-bridge --verbose --stage polaris polaris.assessment.types=SAST,SCA
@@ -64,7 +65,7 @@ pipeline {
                     if (status == 8) { unstable 'policy violation' }
                     else if (status != 0) { error 'bridge failure' }
                 }
-            
+             }
         }
     }
 
