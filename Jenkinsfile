@@ -11,6 +11,12 @@ pipeline {
             DOCKER_PASS = 'dockerhub'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
+            BRIDGE_POLARIS_ACCESSTOKEN = "apf9q719j52cpdso23iookbodskn33its3v465s53gj8dubloqa531uslksaoik7i0no1cp6ap09k"
+            BRIDGE_POLARIS_SERVERURL = "https://poc.polaris.synopsys.com/"
+            BRIDGECLI_LINUX64 = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-linux64.zip"
+            BRIDGE_POLARIS_APPLICATION_NAME = "WHIPSO"
+            BRIDGE_POLARIS_PROJECT_NAME = "Test Vulna"
+
     }
 
     
@@ -49,7 +55,14 @@ pipeline {
                 }
             }
         }
-
+        stage("Polaris"){
+            steps{
+                script{
+                    sh('curl -fLsS -o bridge.zip $(BRIDGECLI_LINUX64) && unzip -qo -d ./bridge.zip && rm -f bridge.zip ./synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA displayName: 'Polaris Scan'')
+                    
+                }
+            }
+        }
     
         stage("Build & Push Docker Image"){
             steps{
