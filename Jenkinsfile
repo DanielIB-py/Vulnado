@@ -57,7 +57,7 @@ pipeline {
         stage("Polaris"){
             steps{
                 script{
-                    sh( ./home/whip/synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA')
+                    sh('./home/whip/synopsys-bridge --stage polaris polaris.assessment.types=SAST,SCA')
                     
                 }
             }
