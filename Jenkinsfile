@@ -13,7 +13,6 @@ pipeline {
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
             BRIDGE_POLARIS_APPLICATION_NAME = "WHIPSO"
             BRIDGE_POLARIS_PROJECT_NAME = "Test Vulna"
-            BRIDGECLI_LINUX64 = "https://sig-repo.synopsys.com/artifactory/bds-integrations-release/com/synopsys/integration/synopsys-bridge/latest/synopsys-bridge-linux64.zip"
     }
 
     
