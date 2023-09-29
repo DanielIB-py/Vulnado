@@ -59,13 +59,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
             
-                        sh('curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip $RUNNER_TEMP bridge.zip && rm -f bridge.zip $WORKSPACE_TMP/synopsys-bridge --verbose && 
-
-export BRIDGE_POLARIS_ACCESSTOKEN=apf9q719j52cpdso23iookbodug2uq180jtki1s5kc4u7bp9g78qi0g6odfqrbm2kk7a6t2g9jrqe
-synopsys-bridge --stage polaris polaris.project.name="Test Vulna" \
-polaris.application.name="WHIPSO" \
-polaris.assessment.types=SAST,SCA \
-polaris.serverurl="https://poc.polaris.synopsys.com/"')
+                        sh('curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip $RUNNER_TEMP bridge.zip && rm -f bridge.zip $WORKSPACE_TMP/synopsys-bridge --verbose && export BRIDGE_POLARIS_ACCESSTOKEN=apf9q719j52cpdso23iookbodug2uq180jtki1s5kc4u7bp9g78qi0g6odfqrbm2kk7a6t2g9jrqe synopsys-bridge --stage polaris polaris.project.name="Test Vulna" \polaris.application.name="WHIPSO" \polaris.assessment.types=SAST,SCA \polaris.serverurl="https://poc.polaris.synopsys.com/"')
                     
                      }
                 }
