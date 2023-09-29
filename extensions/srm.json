@@ -1,0 +1,512 @@
+{
+  "adapters": [
+    {
+      "name": "SRM Initializer",
+      "type": "json",
+      "stage": "srm",
+      "config": {
+        "command": [
+          "srm-initializer"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.project.name",
+          "srm.project.id",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.initialized"
+        ]
+      }
+    },
+    {
+      "name": "SRM Controller",
+      "type": "json",
+      "stage": "srm",
+      "config": {
+        "command": [
+          "srm-controller"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.initialized",
+          "srm.assessment.types",
+          "srm.project.id",
+          "tool.install.directory",
+          "blackduck.execution.path",
+          "blackduck.download.url",
+          "coverity.execution.path",
+          "network.airGap",
+          "bridge.log.*"
+        ],
+        "out": [
+          "blackduck.scan.full"
+        ]
+      }
+    },
+    {
+      "name": "SRM Blackduck Execution",
+      "type": "json",
+      "stage": "srm-sca",
+      "config": {
+        "command": [
+          "blackduck-execution"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "blackduck.execution.path",
+          "project.directory",
+          "bridge.home",
+          "adapter.home",
+          "bridge.diagnostics",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.sca.completed",
+          "srm.analysis.sca.artifacts.path",
+          "blackduck.version"
+        ]
+      }
+    },
+    {
+      "name": "SRM Coverity Capture",
+      "type": "json",
+      "stage": "srm-sast",
+      "config": {
+        "command": [
+          "coverity-capture"
+        ],
+        "in": [
+          "coverity.execution.path",
+          "project.directory",
+          "coverity.idir.path",
+          "srm.url",
+          "srm.apiKey",
+          "srm.project.id",
+          "adapter.home",
+          "bridge.diagnostics",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.sast.completed",
+          "srm.analysis.sast.artifacts.path"
+        ]
+      }
+    },
+    {
+      "name": "SRM Source Zipper",
+      "type": "json",
+      "stage": "srm-sast",
+      "config": {
+        "command": [
+          "srm-source-zipper"
+        ],
+        "in": [
+          "srm.analysis.source.upload",
+          "srm.analysis.sast.completed",
+          "srm.analysis.source.preserveSymLinks",
+          "project.directory",
+          "adapter.home",
+          "bridge.home",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.source.path"
+        ]
+      }
+    },
+    {
+      "name": "SRM Artifacts Uploader",
+      "type": "json",
+      "stage": "srm-processing",
+      "config": {
+        "command": [
+          "srm-artifacts-uploader"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.project.id",
+          "srm.analysis.*.artifacts.path"
+        ],
+        "out": [
+          "srm.analysis.*.artifacts.storageId"
+        ]
+      }
+    },
+    {
+      "name": "SRM Create Analysis",
+      "type": "json",
+      "stage": "srm-processing",
+      "config": {
+        "command": [
+          "srm-create-analysis"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.project.id",
+          "srm.analysis.*.completed",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.prepId"
+        ]
+      }
+    },
+    {
+      "name": "SRM Analysis Tool Input",
+      "type": "json",
+      "stage": "srm-processing",
+      "config": {
+        "command": [
+          "srm-analysis-tool-input"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.analysis.prepId",
+          "srm.analysis.*.artifacts.storageId",
+          "coverity.version",
+          "blackduck.version",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.toolInputsCreated"
+        ]
+      }
+    },
+    {
+      "name": "SRM Analysis Source Input",
+      "type": "json",
+      "stage": "srm-sast",
+      "config": {
+        "command": [
+          "srm-analysis-source-input"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.analysis.source.upload",
+          "srm.analysis.source.path",
+          "srm.analysis.prepId",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.sourceInputCreated"
+        ]
+      }
+    },
+    {
+      "name": "SRM Analysis Set Branch",
+      "type": "json",
+      "stage": "srm-processing",
+      "config": {
+        "command": [
+          "srm-analysis-set-branch"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.project.id",
+          "srm.analysis.prepId",
+          "srm.branch.name",
+          "srm.branch.parent",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.branchSet"
+        ]
+      }
+    },
+    {
+      "name": "SRM Start Analysis",
+      "type": "json",
+      "stage": "srm-processing",
+      "config": {
+        "command": [
+          "srm-start-analysis"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.analysis.prepId",
+          "srm.analysis.branchSet",
+          "srm.analysis.toolInputsCreated",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.job.id"
+        ]
+      }
+    },
+    {
+      "name": "SRM Waiter",
+      "type": "json",
+      "stage": "srm-post-processing",
+      "config": {
+        "command": [
+          "srm-waiter"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.analysis.job.id"
+        ],
+        "out": [
+          "srm.analysis.completed"
+        ]
+      }
+    },
+    {
+      "name": "SRM Policies",
+      "type": "json",
+      "stage": "srm-post-processing",
+      "config": {
+        "command": [
+          "srm-policies"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.project.id",
+          "srm.branch.name",
+          "srm.analysis.completed",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.break"
+        ]
+      }
+    },
+    {
+      "name": "SRM Findings",
+      "type": "json",
+      "stage": "srm-post-processing",
+      "config": {
+        "command": [
+          "srm-findings"
+        ],
+        "in": [
+          "srm.url",
+          "srm.apiKey",
+          "srm.project.id",
+          "srm.branch.name",
+          "srm.analysis.completed",
+          "bridge.log.*"
+        ],
+        "out": [
+          "srm.analysis.issues.*"
+        ]
+      }
+    },
+    {
+      "name": "SRM Summary",
+      "type": "json",
+      "stage": "srm-post-processing",
+      "config": {
+        "command": [
+          "srm-summary"
+        ],
+        "in": [
+          "srm.analysis.completed",
+          "srm.analysis.break",
+          "srm.analysis.issues.*",
+          "bridge.log.*"
+        ],
+        "out": [
+          "bridge.break"
+        ]
+      }
+    },
+    {
+      "name": "Upload Source Code For SAST Assessment By Default",
+      "type": "default",
+      "stage": "srm-sast",
+      "config": {
+        "set": {
+          "key": "srm.analysis.source.upload",
+          "value": true
+        }
+      }
+    }
+  ],
+  "types": {
+    "AnalysisIssues": {
+      "critical": {
+        "description": "Count of High severity issues for the analysis.",
+        "type": "int"
+      },
+      "high": {
+        "description": "Count of High severity issues for the analysis.",
+        "type": "int"
+      },
+      "info": {
+        "description": "Count of Info severity issues for the analysis.",
+        "type": "int"
+      },
+      "low": {
+        "description": "Count of Low severity issues for the analysis.",
+        "type": "int"
+      },
+      "medium": {
+        "description": "Count of Medium severity issues for the analysis.",
+        "type": "int"
+      },
+      "unspecified": {
+        "description": "Count of Unspecified severity issues for the analysis.",
+        "type": "int"
+      }
+    }
+  },
+  "schema": {
+    "srm.url": {
+      "description": "SRM instance url",
+      "type": "string"
+    },
+    "srm.apiKey": {
+      "description": "API key for the SRM instance",
+      "type": "string",
+      "isSensitive": true
+    },
+    "srm.project.name": {
+      "description": "The project name as it exists in SRM",
+      "type": "string"
+    },
+    "srm.project.id": {
+      "description": "The ID of the Project in SRM",
+      "type": "int"
+    },
+    "srm.assessment.types": {
+      "description": "Assessment types for which user wants to run tests for",
+      "type": "[]string"
+    },
+    "tool.install.directory": {
+      "description": "install directory which can also be specified by the user. If not specified bridge will set it to bridge default directory",
+      "type": "string"
+    },
+    "blackduck.install.directory": {
+      "description": "User supplied install directory for Blackduck",
+      "type": "string"
+    },
+    "downloads.blackduck.url": {
+      "description": "Blackduck detect jar archive download URL",
+      "type": "string"
+    },
+    "blackduck.execution.path": {
+      "description": "Blackduck detect jar file path",
+      "type": "string"
+    },
+    "blackduck.scan.full": {
+      "description": "If true, intelligent scan. Else if false, rapid scan. Else default based on current situation",
+      "type": "bool"
+    },
+    "project.directory": {
+      "description": "Project source code directory",
+      "type": "string"
+    },
+    "srm.analysis.sca.completed": {
+      "description": "Flag indicating whether SCA analysis has completed and issues can be fetched.",
+      "type": "bool"
+    },
+    "srm.analysis.sca.artifacts.path": {
+      "description": "Path to archive to upload to SRM for SCA analysis.",
+      "type": "string"
+    },
+    "coverity.execution.path": {
+      "description": "If the correct version of coverity is already installed, set the value of this resource to the path of the coverity thin client.",
+      "type": "string"
+    },
+    "coverity.idir.path": {
+      "description": "The path where Coverity CLI needs to generate intermediate directory",
+      "type": "string"
+    },
+    "srm.analysis.sast.completed": {
+      "description": "Flag indicating whether coverity capture is completed for SRM Workflow.",
+      "type": "bool"
+    },
+    "srm.analysis.sast.artifacts.path": {
+      "description": "Path to archive to upload to SRM for SAST analysis.",
+      "type": "string"
+    },
+    "srm.analysis.prepId": {
+      "description": "Prep ID for SRM analysis",
+      "type": "string"
+    },
+    "srm.analysis.*.artifacts.storageId": {
+      "description": "Storage ID of the artifacts",
+      "type": "string"
+    },
+    "srm.analysis.toolInputsCreated": {
+      "description": "Flag indicating the status of tool input creation for SRM analysis",
+      "type": "bool"
+    },
+    "coverity.version": {
+      "description": "Tool version of Coverity to be used.",
+      "type": "string"
+    },
+    "blackduck.version": {
+      "description": "Tool version of Blackduck to be used.",
+      "type": "string"
+    },
+    "blackduck.download.url": {
+      "description": "User supplied url to download Black Duck Detect jar from",
+      "type": "string"
+    },
+    "srm.branch.name": {
+      "description": "The name of branch in a project in SRM server",
+      "type": "string"
+    },
+    "srm.branch.parent": {
+      "description": "The name of parent branch of a branch in a project in SRM server",
+      "type": "string"
+    },
+    "srm.analysis.branchSet": {
+      "description": "Flag indicating the status of whether a target branch is set for a SRM analysis",
+      "type": "bool"
+    },
+    "srm.analysis.job.id": {
+      "description": "The ID of the analysis job.",
+      "type": "string"
+    },
+    "srm.analysis.completed": {
+      "description": "Flag indicating whether the analysis has completed and issues can be fetched",
+      "type": "bool"
+    },
+    "srm.analysis.break": {
+      "description": "Flag indicates whether to break the build if analysis triggered a policy violation",
+      "type": "bool"
+    },
+    "srm.initialized": {
+      "description": "whether the srm workflow has been initialized successfully",
+      "type": "bool"
+    },
+    "srm.analysis.issues": {
+      "description": "Count of issues for each severity",
+      "type": "AnalysisIssues"
+    },
+    "srm.analysis.source.path": {
+      "description": "File path to the source code",
+      "type": "string"
+    },
+    "srm.analysis.sourceInputCreated": {
+      "description": "Whether the source inputs have been created or not",
+      "type": "bool"
+    },
+    "srm.analysis.source.upload": {
+      "description": "Flag to indicate if user wants to upload the source to SRM instance. Defaults to true.",
+      "type": "bool"
+    },
+    "srm.analysis.source.preserveSymLinks": {
+      "description": "Flag indicating whether to preserve symlinks in the source zip",
+      "type": "bool"
+    },
+    "network.airGap": {
+      "description": "Flag to indicate whether the current run should be run in air-gapped mode. Defaults to false",
+      "type": "bool"
+    }
+  }
+}

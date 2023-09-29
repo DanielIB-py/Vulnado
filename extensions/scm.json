@@ -1,0 +1,46 @@
+{
+  "adapters": [
+    {
+      "name": "SCM Checker",
+      "type": "json",
+      "stage": "scm",
+      "config": {
+        "in": [
+          "github.repository.name",
+          "github.user.token",
+          "github.api.url",
+          "gitlab.repository.name",
+          "gitlab.user.token",
+          "gitlab.api.url",
+          "environment.scan.pull",
+          "blackduck.automation.prComment",
+          "blackduck.automation.fixpr",
+          "blackduck.fixpr.enabled",
+          "coverity.automation.prComment",
+          "polaris.prComment.enabled",
+          "github.repository.pull.number",
+          "github.repository.owner.name",
+          "github.repository.branch.name",
+          "gitlab.repository.pull.number",
+          "gitlab.repository.branch.name",
+          "azure.api.url",
+          "azure.user.token",
+          "azure.organization.name",
+          "azure.project.name",
+          "azure.repository.name",
+          "azure.repository.branch.name",
+          "azure.repository.pull.number",
+          "bitbucket.api.url",
+          "bitbucket.api.token",
+          "bitbucket.project.key",
+          "bitbucket.project.repository.name",
+          "bitbucket.project.repository.pull.number",
+          "bridge.log.*"
+        ],
+        "command": [
+          "scm-checker"
+        ]
+      }
+    }
+  ]
+}

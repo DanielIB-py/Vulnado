@@ -1,0 +1,361 @@
+{
+  "adapters": [
+    {
+      "name": "Blackduck Hub Controller",
+      "type": "json",
+      "stage": "blackduck",
+      "config": {
+        "in": [
+          "blackduck.url",
+          "blackduck.token",
+          "blackduck.install.directory",
+          "blackduck.automation.prcomment",
+          "blackduck.download.url",
+          "network.airGap",
+          "bridge.log.*"
+        ],
+        "out": [
+          "blackduck.execution.path",
+          "downloads.blackduck.url",
+          "blackduck.completed"
+        ],
+        "command": [
+          "blackduck-hub-controller"
+        ]
+      }
+    },
+    {
+      "name": "Check pull request",
+      "type": "default",
+      "stage": "blackduck",
+      "config": {
+        "target": "environment.scan.pull",
+        "in": [
+          "bridge.log.*"
+        ],
+        "command": [
+          "check-pull-request"
+        ]
+      }
+    },
+    {
+      "name": "Default Blackduck Scan Mode",
+      "type": "default",
+      "stage": "blackduck",
+      "config": {
+        "in": [
+          "environment.scan.pull",
+          "bridge.log.*"
+        ],
+        "target": "blackduck.scan.full",
+        "command": [
+          "default-blackduck-scan-mode"
+        ]
+      }
+    },
+    {
+      "name": "Blackduck Results",
+      "type": "json",
+      "stage": "blackduck",
+      "config": {
+        "in": [
+          "blackduck.url",
+          "blackduck.token",
+          "blackduck.completed",
+          "blackduck.scan.full",
+          "blackduck.results.path",
+          "project.directory",
+          "blackduck.automation.fixpr",
+          "blackduck.fixpr.enabled",
+          "blackduck.fixpr.filter.severities",
+          "blackduck.automation.prcomment",
+          "bridge.log.*"
+        ],
+        "out": [
+          "blackduck.project.id",
+          "blackduck.project.version.id",
+          "blackduck.issues",
+          "commenter.issues"
+        ],
+        "command": [
+          "blackduck-results"
+        ]
+      }
+    },
+    {
+      "name": "Blackduck Component Locator",
+      "type": "json",
+      "stage": "blackduck",
+      "config": {
+        "in": [
+          "blackduck.url",
+          "project.directory",
+          "adapter.home",
+          "blackduck.issues",
+          "blackduck.execution.path",
+          "blackduck.fixpr.enabled",
+          "blackduck.fixpr.createSinglePR",
+          "blackduck.fixpr.maxCount",
+          "blackduck.fixpr.useUpgradeGuidance",
+          "blackduck.project.id",
+          "blackduck.automation.fixpr",
+          "blackduck.project.version.id",
+          "bridge.log.*"
+        ],
+        "out": [
+          "fixpr.issues"
+        ],
+        "command": [
+          "blackduck-component-locator"
+        ]
+      }
+    }
+  ],
+  "types": {
+    "FixPRIssue": {
+      "appendDesc": {
+        "description": "The content need to be appended to the pull request description even the description is truncated",
+        "type": "string"
+      },
+      "changes": {
+        "description": "The changes should be made to create the pull request",
+        "type": "[]FixPRChange"
+      },
+      "description": {
+        "description": "The description body of the pull request",
+        "type": "string"
+      },
+      "from": {
+        "description": "The source of the issues",
+        "type": "string"
+      },
+      "recreate": {
+        "description": "Flag to recreate the pull request if it already exists",
+        "type": "bool"
+      },
+      "title": {
+        "description": "The unique title for the pull request",
+        "type": "string"
+      },
+      "uid": {
+        "description": "The unique id for representing this issue",
+        "type": "string"
+      }
+    },
+    "FixPRChange": {
+      "colEnd": {
+        "description": "The end col number in the line needs to be updated",
+        "type": "int"
+      },
+      "colStart": {
+        "description": "The start col number in the line needs to be updated",
+        "type": "int"
+      },
+      "file": {
+        "description": "The file need to be updated",
+        "type": "string"
+      },
+      "lineNumber": {
+        "description": "The line number in the File need to be updated",
+        "type": "int"
+      },
+      "content": {
+        "description": "The original content in the file",
+        "type": "string"
+      },
+      "newContent": {
+        "description": "The new content to update the file",
+        "type": "string"
+      }
+    },
+    "BDIssue": {
+      "component": {
+        "description": "Component name of the component",
+        "type": "string"
+      },
+      "originId": {
+        "description": "The ComponentVersionOriginId of the component from Blackduck",
+        "type": "string"
+      },
+      "version": {
+        "description": "Current version of the component",
+        "type": "string"
+      },
+      "componentVersionOriginUrl": {
+        "description": "Blackduck hub component version origin url",
+        "type": "string"
+      },
+      "manager": {
+        "description": "The package manager that is associated with the component in the issue",
+        "type": "string"
+      },
+      "vulnerabilities": {
+        "description": "The vulnerability details",
+        "type": "[]BDVuln"
+      },
+      "shortTerm": {
+        "description": "ShortTerm version of the component to upgrade to as a short term fix",
+        "type": "string"
+      },
+      "longTerm": {
+        "description": "LongTerm version of the component to upgrade to as the long term fix",
+        "type": "string"
+      }
+    },
+    "BDVuln": {
+      "name": {
+        "description": "Name of the vulnerability",
+        "type": "string"
+      },
+      "description": {
+        "description": "Description of the vulnerability",
+        "type": "string"
+      },
+      "severity": {
+        "description": "The severity of the vulnerability",
+        "type": "string"
+      }
+    }
+  },
+  "schema": {
+    "blackduck.url": {
+      "description": "URL of Blackduck Hub server",
+      "type": "string"
+    },
+    "blackduck.token": {
+      "description": "Token for authenticating with blackduck service",
+      "isSensitive": true,
+      "type": "string"
+    },
+    "blackduck.install.directory": {
+      "description": "User supplied install directory for Blackduck",
+      "type": "string"
+    },
+    "blackduck.execution.path": {
+      "description": "Blackduck detect jar file path",
+      "type": "string"
+    },
+    "project.directory": {
+      "description": "Project source code directory",
+      "type": "string"
+    },
+    "blackduck.scan.full": {
+      "description": "If true, intelligent scan. Else if false, rapid scan. Else default based on current situation",
+      "type": "bool"
+    },
+    "blackduck.completed": {
+      "description": "Flag indicating whether the blackduck execution happened successfully or not",
+      "type": "bool"
+    },
+    "blackduck.scan.failure.severities": {
+      "description": "Blackduck on fail severities",
+      "type": "[]string"
+    },
+    "downloads.blackduck.url": {
+      "description": "Blackduck detect jar archive download URL",
+      "type": "string"
+    },
+    "downloads.blackduck.path": {
+      "description": "Blackduck detect jar archive path",
+      "type": "string"
+    },
+    "environment.scan.pull": {
+      "description": "A boolean represents if the pipeline is triggered by a MR/PR event",
+      "type": "bool"
+    },
+    "blackduck.results.path": {
+      "description": "Blackduck results output directory path",
+      "type": "string"
+    },
+    "blackduck.project.id": {
+      "description": "Blackduck hub project id",
+      "type": "string"
+    },
+    "blackduck.project.version.id": {
+      "description": "Blackduck hub project version id",
+      "type": "string"
+    },
+    "blackduck.issues": {
+      "description": "The vulnerability issues to create the fix PR",
+      "type": "[]BDIssue"
+    },
+    "blackduck.fixpr.enabled": {
+      "description": "Flag to enable/disable the fix PRs creations",
+      "type": "bool"
+    },
+    "blackduck.fixpr.filter.severities": {
+      "description": "Filter the vulnerabilities by given severities",
+      "type": "[]string"
+    },
+    "blackduck.fixpr.createSinglePR": {
+      "description": "Flag to create a single pull request for all the issues",
+      "type": "bool"
+    },
+    "blackduck.fixpr.maxCount": {
+      "description": "The maximum number of issues to create the pull request",
+      "type": "int"
+    },
+    "blackduck.fixpr.useUpgradeGuidance": {
+      "description": "Configure which upgrade guidance to use",
+      "type": "[]string"
+    },
+    "fixpr.issues": {
+      "description": "Issues that need to be created as PRs",
+      "type": "[]FixPRIssue"
+    },
+    "blackduck.automation.fixpr": {
+      "description": "Flag to enable/disable the automatic fix PRs creations",
+      "type": "bool"
+    },
+    "github.repository.name": {
+      "description": "Name of the Github repository",
+      "type": "string"
+    },
+    "github.repository.owner.name": {
+      "description": "Owner name for the Github repository",
+      "type": "string"
+    },
+    "github.repository.branch.name": {
+      "description": "Branch name for the Github repository",
+      "type": "string"
+    },
+    "github.user.token": {
+      "description": "Access token for Github API authentication",
+      "isSensitive": true,
+      "type": "string"
+    },
+    "github.api.url": {
+      "description": "API URL for Github",
+      "type": "string"
+    },
+    "blackduck.automation.prcomment": {
+      "description": "Flag to enable/disable the automatic provide pull request comments",
+      "type": "bool"
+    },
+    "blackduck.download.url": {
+      "description": "User supplied url to download Black Duck Detect jar from",
+      "type": "string"
+    },
+    "gitlab.api.url": {
+      "description": "API URL for Gitlab",
+      "type": "string"
+    },
+    "gitlab.user.token": {
+      "description": "Access token for Gitlab API authentication",
+      "type": "string",
+      "isSensitive": true
+    },
+    "gitlab.repository.name": {
+      "description": "Name of the Gitlab repository",
+      "type": "string"
+    },
+    "gitlab.repository.branch.name": {
+      "description": "Branch name for the GitLab repository",
+      "type": "string"
+    },
+    "network.airGap": {
+      "description": "Flag to indicate whether the current run should be run in air-gapped mode. Defaults to false",
+      "type": "bool"
+    }
+  }
+}

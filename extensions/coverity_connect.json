@@ -1,0 +1,172 @@
+{
+  "adapters": [
+    {
+      "name": "Coverity Connect Controller",
+      "type": "json",
+      "stage": "connect",
+      "config": {
+        "command": [
+          "connect-workflow-controller"
+        ],
+        "in": [
+          "coverity.connect.url",
+          "coverity.connect.user.name",
+          "coverity.connect.user.password",
+          "coverity.install.directory",
+          "coverity.automation.prcomment",
+          "coverity.local",
+          "coverity.version",
+          "bridge.log.*"
+        ],
+        "out": [
+          "coverity.execution.path",
+          "coverity.completed",
+          "coverity.connect.results.comparison.path",
+          "downloads.coverity.headers",
+          "downloads.coveritylicense.headers",
+          "downloads.*.url"
+        ]
+      }
+    },
+    {
+      "name": "Coverity connect post scan",
+      "type": "json",
+      "stage": "connect",
+      "config": {
+        "in": [
+          "coverity.connect.user.name",
+          "coverity.connect.user.password",
+          "coverity.connect.url",
+          "coverity.connect.policy.view",
+          "coverity.connect.project.name",
+          "coverity.completed",
+          "bridge.log.*"
+        ],
+        "out": [
+          "bridge.break"
+        ],
+        "command": [
+          "coverity-connect-post-scan"
+        ]
+      }
+    },
+    {
+      "name": "Coverity Results",
+      "type": "json",
+      "stage": "connect",
+      "config": {
+        "in": [
+          "bridge.log.*",
+          "coverity.automation.prComment",
+          "coverity.connect.results.comparison.path"
+        ],
+        "out": [
+          "commenter.issues"
+        ],
+        "command": [
+          "coverity-results"
+        ]
+      }
+    }
+  ],
+  "types": {
+    "headersType": {
+      "name": {
+        "description": "Header name to send with download URL request",
+        "type": "string"
+      },
+      "value": {
+        "description": "Header value to send with download URL request",
+        "type": "string",
+        "isSensitive": true
+      }
+    }
+  },
+  "schema": {
+    "coverity.connect.url": {
+      "description": "The base url to use in API calls to the Coverity Connect Server.",
+      "type": "string"
+    },
+    "coverity.install.directory": {
+      "description": "If given, this is where we will look to see if coverity is installed.",
+      "type": "string"
+    },
+    "coverity.execution.path": {
+      "description": "If the correct version of coverity is already installed, set the value of this resource to the path of the coverity thin client.",
+      "type": "string"
+    },
+    "downloads.coverity.url": {
+      "description": "If we need to download the coverity thin client, set the value of this resource to the Download URL for the payload",
+      "type": "string"
+    },
+    "coverity.idir.path": {
+      "description": "The path where Coverity CLI needs to generate intermediate directory",
+      "type": "string"
+    },
+    "coverity.completed": {
+      "description": "flag indicating whether the coverity capture happened successfully or not",
+      "type": "bool"
+    },
+    "coverity.connect.user.name": {
+      "description": "Coverity connect adapter username",
+      "type": "string"
+    },
+    "coverity.connect.user.password": {
+      "description": "Coverity connect adapter password",
+      "isSensitive": true,
+      "type": "string"
+    },
+    "coverity.connect.policy.view": {
+      "description": "Coverity connect view to validate the issues",
+      "type": "string"
+    },
+    "coverity.connect.project.name": {
+      "description": "Coverity connect project name",
+      "type": "string"
+    },
+    "downloads.coverity.path": {
+      "description": "Coverity related artifacts downloaded path",
+      "type": "string"
+    },
+    "project.directory": {
+      "description": "Project source code directory",
+      "type": "string"
+    },
+    "coverity.build.command": {
+      "description": "Build command to be passed to Coverity",
+      "type": "[]string"
+    },
+    "coverity.connect.results.comparison.path": {
+      "description": "Location of comparison report",
+      "type": "string"
+    },
+    "coverity.connect.stream.name": {
+      "description": "Name of the stream",
+      "type": "string"
+    },
+    "coverity.automation.prcomment": {
+      "description": "Flag to enable/disable the automatic provide pull request comments",
+      "type": "bool"
+    },
+    "coverity.local": {
+      "description": "This flag will decide the coverity analysis mode to run",
+      "type": "bool"
+    },
+    "downloads.coveritylicense.url": {
+      "description": "Coverity license download URL",
+      "type": "string"
+    },
+    "downloads.coveritylicense.path": {
+      "description": "Coverity license download path",
+      "type": "string"
+    },
+    "downloads.coverity.headers": {
+      "description": "Headers that will be sent with Coverity tool download request",
+      "type": "[]headersType"
+    },
+    "downloads.coveritylicense.headers": {
+      "description":"Headers that will be sent with Coverity License download request",
+      "type": "[]headersType"
+    }
+  }
+}

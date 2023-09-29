@@ -1,0 +1,66 @@
+{
+  "adapters": [
+    {
+      "name": "Blackduck Installer",
+      "type": "json",
+      "stage": "blackduck-installer",
+      "config": {
+        "in": [
+          "downloads.blackduck.path",
+          "blackduck.install.directory",
+          "bridge.log.*"
+        ],
+        "out": [
+          "blackduck.execution.path"
+        ],
+        "command": [
+          "blackduck-installer"
+        ]
+      }
+    },
+    {
+      "name": "Coverity Installer",
+      "type": "json",
+      "stage": "coverity-installer",
+      "config": {
+        "in": [
+          "downloads.coverity.path",
+          "coverity.install.directory",
+          "bridge.log.*"
+        ],
+        "out": [
+          "coverity.execution.path"
+        ],
+        "command": [
+          "coverity-installer"
+        ]
+      }
+    }
+  ],
+  "schema": {
+    "downloads.blackduck.path": {
+      "description": "Blackduck detect jar archive path",
+      "type": "string"
+    },
+    "blackduck.install.directory": {
+      "description": "User supplied install directory for Blackduck",
+      "type": "string"
+    },
+    "blackduck.execution.path": {
+      "description": "Blackduck detect jar file path",
+      "type": "string"
+    },
+    "downloads.coverity.path": {
+      "description": "Coverity related artifacts downloaded path",
+      "type": "string"
+    },
+    "coverity.install.directory": {
+      "description": "If given, this is where we will look to see if coverity is installed.",
+      "type": "string"
+    },
+    "coverity.execution.path": {
+      "description": "If the correct version of coverity is already installed, set the value of this resource to the path of the coverity thin client.",
+      "type": "string"
+    }
+  }
+}

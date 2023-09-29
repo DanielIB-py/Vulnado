@@ -1,0 +1,97 @@
+{
+  "adapters": [
+    {
+      "name": "GitHub Pull Request Handler",
+      "type": "json",
+      "stage": "GitHubFixPR",
+      "config": {
+        "in": [
+          "github.api.url",
+          "github.user.token",
+          "github.repository.name",
+          "github.repository.owner.name",
+          "github.repository.branch.name",
+          "blackduck.automation.fixpr",
+          "blackduck.fixpr.enabled",
+          "fixpr.issues",
+          "network.airGap",
+          "bridge.log.*"
+        ],
+        "command": [
+          "github-pull-request-handler"
+        ]
+      }
+    },
+    {
+      "name": "GitLab Pull Request Handler",
+      "type": "json",
+      "stage": "GitlabFixPr",
+      "config": {
+        "in": [
+          "gitlab.api.url",
+          "gitlab.user.token",
+          "gitlab.repository.name",
+          "gitlab.repository.branch.name",
+          "blackduck.automation.fixpr",
+          "blackduck.fixpr.enabled",
+          "fixpr.issues",
+          "network.airGap",
+          "bridge.log.*"
+        ],
+        "command": [
+          "gitlab-pull-request-handler"
+        ]
+      }
+    },
+    {
+      "name": "Azure Pull Request Handler",
+      "type": "json",
+      "stage": "AzureFixPR",
+      "config": {
+        "in": [
+          "azure.api.url",
+          "azure.user.token",
+          "azure.organization.name",
+          "azure.project.name",
+          "azure.repository.name",
+          "azure.repository.branch.name",
+          "blackduck.automation.fixpr",
+          "blackduck.fixpr.enabled",
+          "fixpr.issues",
+          "network.airGap",
+          "bridge.log.*"
+        ],
+        "command": [
+          "azure-pull-request-handler"
+        ]
+      }
+    }
+  ],
+  "schema": {
+    "azure.api.url": {
+      "description": "API URL for azure",
+      "type": "string"
+    },
+    "azure.user.token": {
+      "description": "Access token for azure API authentication",
+      "type": "string",
+      "isSensitive": true
+    },
+    "azure.organization.name": {
+      "description": "Name of the azure organization",
+      "type": "string"
+    },
+    "azure.project.name": {
+      "description": "Name of the azure project",
+      "type": "string"
+    },
+    "azure.repository.name": {
+      "description": "Name of the azure repository",
+      "type": "string"
+    },
+    "azure.repository.branch.name": {
+      "description": "Branch name for the azure repository",
+      "type": "string"
+    }
+  }
+}

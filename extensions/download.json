@@ -1,0 +1,31 @@
+{
+  "adapters": [
+    {
+      "name": "Downloader Adapter",
+      "type": "json",
+      "stage": "downloader",
+      "config": {
+        "in": [
+          "downloads.*.url",
+          "bridge.log.*"
+        ],
+        "out": [
+          "downloads.*.path"
+        ],
+        "command": [
+          "downloader-adapter"
+        ]
+      }
+    }
+  ],
+  "schema": {
+    "downloads.blackduck.url": {
+      "description": "Blackduck detect jar archive download URL",
+      "type": "string"
+    },
+    "downloads.blackduck.path": {
+      "description": "Blackduck detect jar archive path",
+      "type": "string"
+    }
+  }
+}
