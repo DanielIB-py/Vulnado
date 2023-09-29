@@ -59,7 +59,7 @@ pipeline {
                 script {
                     withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
             
-                        sh('./home/whip/workspace/vulnado/synopsys-bridge --stage polaris --input input.json')
+                        sh('curl -fLss -o bridge.zip $BRIDGECLI_LINUX64 && unzip bridge.zip && ./home/whip/workspace/vulnado/synopsys-bridge --stage polaris --input input.json')
                     
                      }
                 }
