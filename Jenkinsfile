@@ -53,18 +53,18 @@ pipeline {
             }
         }
        
-    stage('polaris') {
+   stage('polaris') {
         steps {
-            
+            withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
                 script {
-                    withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
-            
-                        sh('./synopsys-bridge --stage polaris --input input.json')
-                    
-                     }
+                  
+                        curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip $RUNNER_TEMP bridge.zip && rm -f bridge.zip && $WOKSPACE_TMP && synopsys-bridge --verbose --stage polaris polaris.assessment.types=SAST,SCA
+                  
+             
                 }
             }
-         }
+        }
+    }
                            
          
         stage("Build & Push Docker Image"){
