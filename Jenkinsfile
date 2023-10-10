@@ -12,7 +12,7 @@ pipeline {
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
             BRIDGE_POLARIS_APPLICATION_NAME = "WHIPSO"
-            BRIDGE_POLARIS_PROJECT_NAME = "Test Vulnapipeline"
+            BRIDGE_POLARIS_PROJECT_NAME = "Test Vulna"
           
     }
 
