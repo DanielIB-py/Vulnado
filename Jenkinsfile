@@ -58,7 +58,7 @@ pipeline {
             withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
                 script {
                   
-                      sh('curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip $RUNNER_TEMP bridge.zip')
+                      sh('curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip $RUNNER_TEMP bridge.zip && synopsys-bridge --verbose --stage polaris polaris.assessment.types=SAST,SCA')
                   
              
                 }
