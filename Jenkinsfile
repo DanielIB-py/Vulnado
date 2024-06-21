@@ -13,6 +13,8 @@ pipeline {
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
             BRIDGE_POLARIS_APPLICATION_NAME = "WHIPSO"
             BRIDGE_POLARIS_PROJECT_NAME = "Test Vulna"
+            BRIDGE_POLARIS_BRANCH_NAME = "master"
+
           
     }
 
@@ -27,7 +29,7 @@ pipeline {
 
         stage("Checkout from SCM") {
                steps {
-                   git branch: 'master', credentialsId: 'github', url: 'https://github.com/Danielib217/vulnado'
+                   git branch: 'master', credentialsId: 'github', url: 'https://github.com/DanielIB-py/Vulnado'
                }
         }
 
@@ -43,22 +45,14 @@ pipeline {
                }
         }
         
-      stage("SonarQube Analysis"){
-            steps {
-                script {
-                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token'){
-                        sh "mvn sonar:sonar"
-                    }
-                }
-            }
-        }
+    
        
    stage('polaris') {
         steps {
             withCredentials([string(credentialsId: 'poc.polarissynopsys.com', variable: 'BRIDGE_POLARIS_ACCESSTOKEN')]) {
                 script {
                   
-                      sh('curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip $RUNNER_TEMP bridge.zip && rm -f bridge.zip && /home/whip/workspace/vulnado/synopsys-bridge --verbose --stage polaris polaris.assessment.types=SAST,SCA')
+                      sh('curl -fLsS -o bridge.zip $BRIDGECLI_LINUX64 && unzip $RUNNER_TEMP bridge.zip && rm -f bridge.zip && /home/agent/workspace/vulnado/synopsys-bridge --verbose --stage polaris polaris.assessment.types=SAST,SCA')
                   
              
                 }
