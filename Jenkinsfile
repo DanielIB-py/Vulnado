@@ -45,7 +45,15 @@ pipeline {
                }
         }
         
-    
+      stage('Define Current Path') {
+               steps {
+                 script {
+                    // Obtener la ruta actual del directorio de trabajo
+                    def currentPath = pwd()
+                    echo "La ruta actual es: ${currentPath}"
+                }
+            }
+        }
        
    stage('polaris') {
         steps {
